@@ -1,4 +1,4 @@
-const RESULTS = {
+const RESULTS = {/*
   "groups": {
     "A": [
       "Mexico",
@@ -300,5 +300,5 @@ const RESULTS = {
       "Jude Bellingham",
       "Kevin De Bruyne"
     ]
-  }
+  }*/
 };
