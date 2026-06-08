@@ -1,5 +1,15 @@
 # ⚽ World Cup 2026 Prediction Game
 
+Look and play around with the resulting webpage (please, don't send predictions, do anything you like but that!) here:
+
+https://jjimenezgarcia.github.io/worldcup2026-prediction/
+
+<img width="1332" height="896" alt="image" src="https://github.com/user-attachments/assets/73932cae-5116-4385-9be8-7081222f8f3d" />
+<img width="1332" height="896" alt="image" src="https://github.com/user-attachments/assets/eff4352d-5e79-4568-b73f-8c314827bde7" />
+<img width="1317" height="266" alt="image" src="https://github.com/user-attachments/assets/fe87e5fb-102f-4a0f-9639-7ba51341de92" />
+<img width="1257" height="749" alt="image" src="https://github.com/user-attachments/assets/7648a827-2927-4dfe-8d56-01c57e586ec6" />
+
+
 A very serious and enterprise-grade football prediction platform made with cutting-edge technologies such as:
 
 - AI-generated code
@@ -80,8 +90,7 @@ Somewhere in the JavaScript there’s a hardcoded URL pointing to my sheet.
 
 Replace it with yours.
 
-Good luck finding it.  
-(I genuinely don't remember where it is.)
+It is at the top of `app.js`, you need to modify all 3 variables.
 
 ---
 
