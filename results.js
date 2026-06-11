@@ -1,5 +1,5 @@
-const RESULTS = {/*
-  "groups": {
+const RESULTS = {
+  /*"groups": {
     "A": [
       "Mexico",
       "South Africa",
@@ -82,16 +82,16 @@ const RESULTS = {/*
     "Spain",
     "Ecuador",
     "New Zealand"
-  ],
+  ],*/
   "groupMatches": {
     "A": {
       "Mexico__South Africa": { "home": 2, "away": 0 },
-      "Mexico__South Korea": { "home": 1, "away": 0 },
+      /*"Mexico__South Korea": { "home": 1, "away": 0 },
       "Mexico__Czech Republic": { "home": 2, "away": 1 },
       "South Africa__South Korea": { "home": 2, "away": 0 },
       "South Africa__Czech Republic": { "home": 1, "away": 0 },
-      "South Korea__Czech Republic": { "home": 1, "away": 1 }
-    },
+      "South Korea__Czech Republic": { "home": 1, "away": 1 }*/
+    }/*,
     "B": {
       "Canada__Switzerland": { "home": 0, "away": 0 },
       "Canada__Qatar": { "home": 2, "away": 1 },
@@ -179,9 +179,9 @@ const RESULTS = {/*
       "Ghana__Croatia": { "home": 2, "away": 0 },
       "Ghana__Panama": { "home": 1, "away": 1 },
       "Croatia__Panama": { "home": 1, "away": 2 }
-    }
+    }*/
   },
-  "knockout": {
+  /*"knockout": {
     "round32": [
       "South Africa",
       "Ivory Coast",
@@ -275,8 +275,8 @@ const RESULTS = {/*
         { "match": 104, "team1": "Norway", "team2": "Algeria", "winner": "Norway" }
       ]
     }
-  },
-  "semifinalists": [
+  },*/
+  /*"semifinalists": [
     "Norway",
     "Morocco",
     "Algeria",
