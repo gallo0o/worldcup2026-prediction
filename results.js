@@ -89,9 +89,9 @@ const RESULTS = {
       /*"Mexico__South Korea": { "home": 1, "away": 0 },
       "Mexico__Czech Republic": { "home": 2, "away": 1 },
       "South Africa__South Korea": { "home": 2, "away": 0 },
-      "South Africa__Czech Republic": { "home": 1, "away": 0 },
-      "South Korea__Czech Republic": { "home": 1, "away": 1 }*/
-    }/*,
+      "South Africa__Czech Republic": { "home": 1, "away": 0 },*/
+      "South Korea__Czech Republic": { "home": 2, "away": 1 }
+    },/*
     "B": {
       "Canada__Switzerland": { "home": 0, "away": 0 },
       "Canada__Qatar": { "home": 2, "away": 1 },
