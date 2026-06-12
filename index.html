@@ -16,18 +16,19 @@
   </header>
 
   <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="predict">&#128202; Apostar</button>
-    <button class="tab-btn" data-tab="leaderboard">&#127942; Ranking</button>
+    <!-- <button class="tab-btn active" data-tab="predict">&#128202; Apostar</button> -->
+    <!-- <button class="tab-btn" data-tab="leaderboard">&#127942; Ranking</button> -->
   </nav>
 
   <!-- ==================== PREDICTION TAB ==================== -->
-  <div id="tab-predict" class="tab-content active">
+  <!--<div id="tab-predict" class="tab-content active"> -->
+  <div id="tab-predict" class="tab-content">
     <div class="container">
 
       <!-- Toolbar -->
       <div class="toolbar-btns">
         <button class="toolbar-btn" id="btnReset">&#128260; Limpiar todo (no hay vuelta atrás)</button>
-        <button class="toolbar-btn" id="btnScoringHelp">❓ Cómo se puntúa</button>
+        <!--<button class="toolbar-btn" id="btnScoringHelp">❓ Cómo se puntúa</button>-->
       </div>
 
       <!-- Group Stage -->
@@ -47,32 +48,32 @@
         <h3>&#127942; Logros individuales</h3>
 
         <div class="award-row">
-          <label>Bota de Oro (5pt):</label>
+          <label>Bota de Oro (15pt):</label>
           <select id="awardGb1" class="award-select"></select>
         </div>
 
         <div class="award-row">
-          <label>2º Bota de Oro (3pt):</label>
+          <label>2º Bota de Oro (10pt):</label>
           <select id="awardGb2" class="award-select"></select>
         </div>
 
         <div class="award-row">
-          <label>3º Bota de Oro (1pt):</label>
+          <label>3º Bota de Oro (5pt):</label>
           <select id="awardGb3" class="award-select"></select>
         </div>
 
         <div class="award-row">
-          <label>Balón de Oro (5pt):</label>
+          <label>Balón de Oro (15pt):</label>
           <select id="awardBa1" class="award-select"></select>
         </div>
 
         <div class="award-row">
-          <label>2º Balón de Oro (3pt):</label>
+          <label>2º Balón de Oro (10pt):</label>
           <select id="awardBa2" class="award-select"></select>
         </div>
 
         <div class="award-row">
-          <label>3º Balón de Oro (1pt):</label>
+          <label>3º Balón de Oro (5pt):</label>
           <select id="awardBa3" class="award-select"></select>
         </div>
       </div>
@@ -86,8 +87,12 @@
   </div>
 
   <!-- ==================== LEADERBOARD TAB ==================== -->
-    <div id="tab-leaderboard" class="tab-content">
+    <!-- <div id="tab-leaderboard" class="tab-content"> -->
+    <div id="tab-leaderboard" class="tab-content active">
     <div class="container">
+      <div class="toolbar-btns">
+        <button class="toolbar-btn" id="btnScoringHelp">❓ Cómo se puntúa</button>
+      </div>
       <h2 class="section-title">&#127942; Ranking</h2>
       <p class="note-text">
         Haz click en un jugador para confirmar el sesgo que ya tienes de que no tiene razón.

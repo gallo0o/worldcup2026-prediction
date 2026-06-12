@@ -230,50 +230,12 @@ const RESULTS = {
     "final": "Norway",
     "thirdPlace": "Morocco",
     "matches": {
-      "round32": [
-        { "match": 73, "team1": "South Africa", "team2": "Canada", "winner": "South Africa" },
-        { "match": 74, "team1": "Ivory Coast", "team2": "Spain", "winner": "Ivory Coast" },
-        { "match": 75, "team1": "Netherlands", "team2": "Scotland", "winner": "Netherlands" },
-        { "match": 76, "team1": "Brazil", "team2": "Japan", "winner": "Brazil" },
-        { "match": 77, "team1": "Norway", "team2": "New Zealand", "winner": "Norway" },
-        { "match": 78, "team1": "Curaçao", "team2": "France", "winner": "France" },
-        { "match": 79, "team1": "Mexico", "team2": "Sweden", "winner": "Mexico" },
-        { "match": 80, "team1": "Ghana", "team2": "Algeria", "winner": "Algeria" },
-        { "match": 81, "team1": "Turkey", "team2": "Colombia", "winner": "Turkey" },
-        { "match": 82, "team1": "Egypt", "team2": "Morocco", "winner": "Morocco" },
-        { "match": 83, "team1": "Portugal", "team2": "Panama", "winner": "Portugal" },
-        { "match": 84, "team1": "Uruguay", "team2": "Argentina", "winner": "Uruguay" },
-        { "match": 85, "team1": "Switzerland", "team2": "Iraq", "winner": "Switzerland" },
-        { "match": 86, "team1": "Jordan", "team2": "Cape Verde", "winner": "Jordan" },
-        { "match": 87, "team1": "DR Congo", "team2": "Ecuador", "winner": "Ecuador" },
-        { "match": 88, "team1": "Paraguay", "team2": "Belgium", "winner": "Belgium" }
-      ],
-      "round16": [
-        { "match": 89, "team1": "South Africa", "team2": "Netherlands", "winner": "Netherlands" },
-        { "match": 90, "team1": "Ivory Coast", "team2": "Norway", "winner": "Norway" },
-        { "match": 91, "team1": "Brazil", "team2": "France", "winner": "France" },
-        { "match": 92, "team1": "Mexico", "team2": "Algeria", "winner": "Algeria" },
-        { "match": 93, "team1": "Portugal", "team2": "Uruguay", "winner": "Uruguay" },
-        { "match": 94, "team1": "Turkey", "team2": "Morocco", "winner": "Morocco" },
-        { "match": 95, "team1": "Jordan", "team2": "Belgium", "winner": "Belgium" },
-        { "match": 96, "team1": "Switzerland", "team2": "Ecuador", "winner": "Ecuador" }
-      ],
-      "quarterfinals": [
-        { "match": 97, "team1": "Netherlands", "team2": "Norway", "winner": "Norway" },
-        { "match": 98, "team1": "Uruguay", "team2": "Morocco", "winner": "Morocco" },
-        { "match": 99, "team1": "France", "team2": "Algeria", "winner": "Algeria" },
-        { "match": 100, "team1": "Belgium", "team2": "Ecuador", "winner": "Ecuador" }
-      ],
-      "semifinals": [
-        { "match": 101, "team1": "Norway", "team2": "Morocco", "winner": "Norway" },
-        { "match": 102, "team1": "Algeria", "team2": "Ecuador", "winner": "Algeria" }
-      ],
-      "thirdPlace": [
-        { "match": 103, "team1": "Morocco", "team2": "Ecuador", "winner": "Morocco" }
-      ],
-      "final": [
-        { "match": 104, "team1": "Norway", "team2": "Algeria", "winner": "Norway" }
-      ]
+      "round32": [],
+      "round16": [],
+      "quarterfinals": [],
+      "semifinals": [],
+      "thirdPlace": [],
+      "final": []
     }
   },*/
   /*"semifinalists": [
