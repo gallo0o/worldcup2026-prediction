@@ -16,12 +16,12 @@ const puntuaciones = {
   grupos: {
     partido: {
       resultadoExacto: 3,
-      ganadorEmpateCorrecto: 1
+      ganadorEmpateCorrecto: 2
     },
     posicion: {
-      primero: 3,
+      primero: 2,
       segundo: 2,
-      tercero: 1
+      tercero: 2
     }
   },
   eliminatorias: {
