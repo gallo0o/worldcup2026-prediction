@@ -2631,3 +2631,64 @@ header .subtitle {
     margin: 0 !important;
   }
 }
+
+/* ---- Hidden results updater ---- */
+#siteTitle {
+  cursor: default;
+  user-select: none;
+}
+
+.results-admin-mode #btnReset {
+  display: none !important;
+}
+
+.results-admin-mode #tab-predict .bracket-wrapper,
+.results-admin-mode #tab-predict .awards-section {
+  display: block;
+}
+
+.results-admin-mode #tab-predict .awards-section h3::after {
+  content: ' reales';
+}
+
+.results-admin-mode .bracket-slot.has-team {
+  cursor: pointer;
+}
+
+.results-admin-mode .bracket-slot.empty-slot {
+  cursor: not-allowed;
+}
+
+.results-output {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.results-output h3 {
+  margin: 0 42px 14px 0;
+  color: var(--border-color);
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+
+.results-output-textarea {
+  width: 100%;
+  min-height: 62vh;
+  margin-top: 14px;
+  padding: 14px;
+  border: 2px solid #C8E6C9;
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--dark-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  resize: vertical;
+  box-shadow: var(--shadow-soft);
+}
+
+.results-output-textarea:focus {
+  outline: none;
+  border-color: var(--grass-green);
+  box-shadow: 0 0 0 3px rgba(76,175,80,0.18), var(--shadow-soft);
+}

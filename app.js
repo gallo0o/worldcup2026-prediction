@@ -15,7 +15,7 @@ const ENTRY_ID = 'entry.1885888446';
 const puntuaciones = {
   grupos: {
     partido: {
-      resultadoExacto: 2,
+      resultadoExacto: 3,
       ganadorEmpateCorrecto: 1
     },
     posicion: {
@@ -618,6 +618,7 @@ const LOCAL_STORAGE_VERSION = '5';
 const LOCAL_STORAGE_VERSION_KEY = 'wc2026_version';
 const LOCAL_STORAGE_PICKS_KEY = 'wc2026_picks';
 let localSaveTimer = null;
+let resultsAdminMode = false;
 
 function normalizeLoadedState() {
   ensureAllGroupMatches();
@@ -1094,9 +1095,9 @@ function openGroupResultsModal(group) {
         <span>${match.team1}</span>
       </div>
       <div class="match-score-controls">
-        <input class="score-input" type="number" min="0" max="99" inputmode="numeric" data-key="${match.key}" data-side="home" value="${result.home ?? 0}">
+        <input class="score-input" type="number" min="0" max="99" inputmode="numeric" data-key="${match.key}" data-side="home" value="${result.home ?? ''}">
         <span class="score-separator">-</span>
-        <input class="score-input" type="number" min="0" max="99" inputmode="numeric" data-key="${match.key}" data-side="away" value="${result.away ?? 0}">
+        <input class="score-input" type="number" min="0" max="99" inputmode="numeric" data-key="${match.key}" data-side="away" value="${result.away ?? ''}">
       </div>
       <div class="match-team match-team-right">
         <span>${match.team2}</span>
@@ -3501,14 +3502,574 @@ async function confirmSubmitPrediction() {
   }
 }
 
+
+// ---- Hidden Results Admin ----
+function clonePlain(value, fallback) {
+  try {
+    return JSON.parse(JSON.stringify(value ?? fallback));
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function loadResultsIntoEditor() {
+  const current = typeof RESULTS !== 'undefined' ? RESULTS : {};
+
+  state.groupMatches = normalizeGroupMatchesForStandings(current.groupMatches || {});
+  ensureAllGroupMatches();
+
+  GROUP_NAMES.forEach(group => {
+    if (isGroupComplete(group)) {
+      state.groups[group] = calculateGroupStandings(group).map(row => row.team);
+    } else {
+      state.groups[group] = (TEAMS_BY_GROUP[group] || []).map(team => team.name);
+    }
+  });
+
+  const allGroupsComplete = GROUP_NAMES.every(isGroupComplete);
+
+  state.thirdPlace = [];
+  if (allGroupsComplete) {
+    syncAutoThirdPlace();
+  }
+
+  state.knockoutResults = {};
+  state.matchTeams = {};
+
+  // No precargamos ni construimos eliminatorias hasta que estén completos
+  // los 12 grupos. Así el results.js generado no se contamina con cruces
+  // parcialmente calculados o equipos null.
+  if (allGroupsComplete) {
+    const knockoutMatches = current.knockout?.matches || {};
+    Object.values(knockoutMatches).flat().forEach(match => {
+      if (match?.match && match?.winner) {
+        state.knockoutResults[match.match] = match.winner;
+      }
+    });
+
+    buildTPAllocation();
+    computeMatchTeams();
+  } else {
+    tpAllocation = {};
+  }
+
+  state.awards = {
+    goldenBoot: current.awards?.goldenBoot || ['', '', ''],
+    goldenBall: current.awards?.goldenBall || ['', '', '']
+  };
+
+  fillAwards(state.awards);
+}
+
+function trimTrailingEmptyAwards(list) {
+  const arr = (list || []).map(value => value || '');
+  while (arr.length && !arr[arr.length - 1]) arr.pop();
+  return arr;
+}
+
+function emptyKnockoutResultsPayload() {
+  return {
+    round32: [],
+    round16: [],
+    quarterfinals: [],
+    semifinals: [],
+    champion: '',
+    runnerUp: '',
+    finalists: [],
+    thirdPlaceWinner: '',
+    final: '',
+    thirdPlace: '',
+    matches: {
+      round32: [],
+      round16: [],
+      quarterfinals: [],
+      semifinals: [],
+      thirdPlace: [],
+      final: []
+    }
+  };
+}
+
+function buildKnockoutResultsPayload(canBuildThirdPlace = GROUP_NAMES.every(isGroupComplete)) {
+  if (!canBuildThirdPlace) {
+    tpAllocation = {};
+    state.thirdPlace = [];
+    state.matchTeams = {};
+    state.knockoutResults = {};
+    return emptyKnockoutResultsPayload();
+  }
+
+  buildTPAllocation();
+  computeMatchTeams();
+
+  function roundNums(roundName) {
+    return (KO_TREE?.[roundName] || []).map(match => match.num);
+  }
+
+  function winners(nums) {
+    return nums.map(num => state.knockoutResults[num]).filter(Boolean);
+  }
+
+  function allTeams(nums) {
+    return nums
+      .flatMap(num => {
+        const match = state.matchTeams[num] || {};
+        return [match.team1, match.team2];
+      })
+      .filter(Boolean);
+  }
+
+  function matchDetails(nums) {
+    return nums
+      .map(num => {
+        const match = state.matchTeams[num] || {};
+        const winner = state.knockoutResults[num] || null;
+
+        if (!match.team1 && !match.team2 && !winner) return null;
+
+        return {
+          match: num,
+          team1: match.team1 || null,
+          team2: match.team2 || null,
+          winner
+        };
+      })
+      .filter(Boolean);
+  }
+
+  const r32nums = roundNums('round32');
+  const r16nums = roundNums('round16');
+  const qfnums = roundNums('quarterfinals');
+  const sfnums = roundNums('semifinals');
+  const finalNum = KO_TREE?.final?.[0]?.num || null;
+  const thirdNum = KO_TREE?.thirdPlace?.[0]?.num || null;
+  const finalMatch = finalNum ? (state.matchTeams[finalNum] || {}) : {};
+  const thirdPlaceWinner = thirdNum ? (state.knockoutResults[thirdNum] || null) : null;
+  const champion = finalNum ? (state.knockoutResults[finalNum] || null) : null;
+  const runnerUp = champion
+    ? ([finalMatch.team1, finalMatch.team2].find(team => team && team !== champion) || null)
+    : null;
+
+  return {
+    round32: winners(r32nums),
+    round16: winners(r16nums),
+    quarterfinals: winners(qfnums),
+    semifinals: winners(sfnums),
+    champion: champion || '',
+    runnerUp: runnerUp || '',
+    finalists: [finalMatch.team1, finalMatch.team2].filter(Boolean),
+    thirdPlaceWinner: thirdPlaceWinner || '',
+    final: champion || '',
+    thirdPlace: thirdPlaceWinner || '',
+    matches: {
+      round32: matchDetails(r32nums),
+      round16: matchDetails(r16nums),
+      quarterfinals: matchDetails(qfnums),
+      semifinals: matchDetails(sfnums),
+      thirdPlace: thirdNum ? matchDetails([thirdNum]) : [],
+      final: finalNum ? matchDetails([finalNum]) : []
+    }
+  };
+}
+
+function buildResultsFilePayload() {
+  const groups = {};
+  const groupMatches = {};
+
+  GROUP_NAMES.forEach(group => {
+    groupMatches[group] = {};
+
+    getGroupMatchList(group).forEach(match => {
+      const result = state.groupMatches[group]?.[match.key] || {};
+      const home = parseGoalValue(result.home);
+      const away = parseGoalValue(result.away);
+
+      if (home === null || away === null) return;
+
+      const outputKey = `${match.team1}__${match.team2}`;
+      groupMatches[group][outputKey] = { home, away };
+    });
+
+    groups[group] = isGroupComplete(group)
+      ? calculateGroupStandings(group).map(row => row.team)
+      : [];
+  });
+
+  const allGroupsComplete = GROUP_NAMES.every(isGroupComplete);
+  const thirdPlace = allGroupsComplete
+    ? getAutoThirdPlaceTeams().map(item => item.row.team)
+    : [];
+  state.thirdPlace = thirdPlace;
+
+  const knockout = buildKnockoutResultsPayload(allGroupsComplete);
+  const awards = readAwards();
+
+  return {
+    groups,
+    thirdPlace,
+    groupMatches,
+    knockout,
+    semifinalists: allUniqueTeamsFromMatches(knockout.matches.semifinals),
+    finalists: knockout.finalists,
+    champion: knockout.champion || '',
+    runnerUp: knockout.runnerUp || '',
+    thirdPlaceWinner: knockout.thirdPlaceWinner || '',
+    awards: {
+      goldenBoot: trimTrailingEmptyAwards(awards.goldenBoot),
+      goldenBall: trimTrailingEmptyAwards(awards.goldenBall)
+    }
+  };
+}
+
+function allUniqueTeamsFromMatches(matches) {
+  const seen = new Set();
+  (matches || []).forEach(match => {
+    [match.team1, match.team2].forEach(team => {
+      if (team) seen.add(team);
+    });
+  });
+  return Array.from(seen);
+}
+
+function stringifyResultsJs(value) {
+  const json = JSON.stringify(value, null, 2);
+
+  const compactScores = json.replace(
+    /\{\n\s+"home": (\d+),\n\s+"away": (\d+)\n\s+\}/g,
+    '{ "home": $1, "away": $2 }'
+  );
+
+  return `const RESULTS = ${compactScores};\n`;
+}
+
+function downloadTextFile(filename, content) {
+  const blob = new Blob([content], { type: 'text/javascript;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function copyText(textarea) {
+  const value = textarea.value;
+
+  try {
+    await navigator.clipboard.writeText(value);
+    showToast('Copiado');
+  } catch (e) {
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    showToast('Copiado');
+  }
+}
+
+const RESULTS_GITHUB_REPO = {
+  owner: 'jjimenezgarcia',
+  repo: 'worldcup2026-prediction',
+  path: 'results.js',
+  branch: 'main'
+};
+const GITHUB_API_BASE = 'https://api.github.com';
+const GITHUB_API_VERSION = '2022-11-28';
+
+function encodePathForGitHub(path) {
+  return path.split('/').map(encodeURIComponent).join('/');
+}
+
+function toBase64Utf8(value) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = '';
+  const chunkSize = 0x8000;
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.slice(i, i + chunkSize));
+  }
+
+  return btoa(binary);
+}
+
+function fromBase64Utf8(value) {
+  const binary = atob(String(value || '').replace(/\n/g, ''));
+  const bytes = new Uint8Array(binary.length);
+
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return new TextDecoder().decode(bytes);
+}
+
+function normalizeFileForComparison(value) {
+  return String(value || '').replace(/\r\n/g, '\n').trim();
+}
+
+function setGitHubUpdateStatus(message, isError = false) {
+  const status = document.getElementById('githubUpdateStatus');
+  if (!status) return;
+
+  status.className = isError ? 'error-toast-inline' : 'success-toast-inline';
+  status.innerHTML = message;
+}
+
+function buildGitHubApiError(response, body, rawText) {
+  const acceptedPermissions = response.headers.get('x-accepted-github-permissions');
+  const details = Array.isArray(body?.errors)
+    ? body.errors.map(err => err.message || err.code || JSON.stringify(err)).filter(Boolean).join(' | ')
+    : '';
+
+  return [
+    `GitHub ${response.status} ${response.statusText}`,
+    body?.message || rawText,
+    details,
+    acceptedPermissions ? `Permisos esperados: ${acceptedPermissions}` : ''
+  ].filter(Boolean).join(' — ');
+}
+
+async function githubRequest(path, token, options = {}) {
+  const response = await fetch(`${GITHUB_API_BASE}${path}`, {
+    ...options,
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `Bearer ${token}`,
+      'X-GitHub-Api-Version': GITHUB_API_VERSION,
+      ...(options.headers || {})
+    }
+  });
+
+  const rawText = await response.text();
+  let body = null;
+
+  if (rawText) {
+    try {
+      body = JSON.parse(rawText);
+    } catch (e) {
+      body = null;
+    }
+  }
+
+  if (!response.ok) {
+    throw new Error(buildGitHubApiError(response, body, rawText));
+  }
+
+  return body;
+}
+
+async function commitResultsToMain(fileContent, token) {
+  const cleanToken = String(token || '').trim();
+
+  if (!cleanToken) {
+    throw new Error('Pega un PAT de GitHub primero. No se guarda en ningún sitio; solo se usa para esta petición.');
+  }
+
+  const { owner, repo, path, branch } = RESULTS_GITHUB_REPO;
+  const encodedPath = encodePathForGitHub(path);
+
+  setGitHubUpdateStatus(`Leyendo ${path} en ${branch}...`);
+  const currentFile = await githubRequest(
+    `/repos/${owner}/${repo}/contents/${encodedPath}?ref=${encodeURIComponent(branch)}`,
+    cleanToken
+  );
+
+  const remoteContent = fromBase64Utf8(currentFile.content || '');
+  if (normalizeFileForComparison(remoteContent) === normalizeFileForComparison(fileContent)) {
+    throw new Error(`No hay cambios respecto al ${path} que está ahora mismo en ${branch}.`);
+  }
+
+  setGitHubUpdateStatus(`Actualizando ${path} directamente en ${branch}...`);
+  const result = await githubRequest(`/repos/${owner}/${repo}/contents/${encodedPath}`, cleanToken, {
+    method: 'PUT',
+    body: JSON.stringify({
+      message: 'resultados',
+      content: toBase64Utf8(fileContent),
+      sha: currentFile.sha,
+      branch
+    })
+  });
+
+  return result;
+}
+
+async function submitGeneratedResultsCommit(textarea, tokenInput, button) {
+  const token = tokenInput.value;
+  tokenInput.value = '';
+  button.disabled = true;
+  button.textContent = 'Actualizando main...';
+
+  try {
+    const result = await commitResultsToMain(textarea.value, token);
+    const commitUrl = result?.commit?.html_url;
+    setGitHubUpdateStatus(
+      commitUrl
+        ? `Commit creado en main: <a href="${commitUrl}" target="_blank" rel="noopener noreferrer">ver commit</a>`
+        : 'Commit creado en main.'
+    );
+    showToast('results.js actualizado en main');
+  } catch (e) {
+    console.error(e);
+    setGitHubUpdateStatus(e.message || 'Error actualizando main.', true);
+    showToast('Error actualizando main', true);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Actualizar main';
+  }
+}
+
+function openGeneratedResultsModal() {
+  const payload = buildResultsFilePayload();
+  const fileContent = stringifyResultsJs(payload);
+
+  const modal = document.getElementById('predictionModal');
+  const viewer = document.getElementById('predictionViewer');
+  modal.style.display = 'flex';
+
+  const completeGroups = GROUP_NAMES.filter(isGroupComplete).length;
+
+  viewer.innerHTML = `
+    <div class="results-output">
+      <h3>results.js generado</h3>
+      <p class="note-text">
+        Grupos completos: ${completeGroups}/${GROUP_NAMES.length}. Los grupos incompletos quedan como [] y no meten clasificados todavía. El bracket y los premios salen con lo que hayas elegido ahora mismo.
+      </p>
+      <textarea id="generatedResultsTextarea" class="results-output-textarea" spellcheck="false"></textarea>
+      <div class="group-modal-actions">
+        <button type="button" class="toolbar-btn" id="copyGeneratedResults">Copiar archivo completo</button>
+        <button type="button" class="toolbar-btn" id="downloadGeneratedResults">Descargar results.js</button>
+        <button type="button" class="submit-btn" id="showGithubUpdatePanel">Actualizar main en GitHub</button>
+        <button type="button" class="toolbar-btn" id="closeGeneratedResults">Cerrar</button>
+      </div>
+      <div id="githubUpdatePanel" class="github-pr-panel" style="display:none;">
+        <h4>Actualizar main en GitHub</h4>
+        <p class="note-text">
+          Pega un PAT fine-grained con acceso a ${RESULTS_GITHUB_REPO.owner}/${RESULTS_GITHUB_REPO.repo}. Para este modo directo necesita Contents: Read and write. No se guarda: se borra del input justo al enviar.
+        </p>
+        <input
+          type="password"
+          id="githubPatInput"
+          class="name-modal-input"
+          name="github-token"
+          autocomplete="current-password"
+          placeholder="GitHub PAT"
+          spellcheck="false"
+        >
+        <div class="group-modal-actions">
+          <button type="button" class="submit-btn" id="updateGithubMain">Actualizar main</button>
+        </div>
+        <div id="githubUpdateStatus" class="github-pr-status" aria-live="polite"></div>
+      </div>
+    </div>
+  `;
+
+  const textarea = document.getElementById('generatedResultsTextarea');
+  textarea.value = fileContent;
+  textarea.focus();
+  textarea.select();
+
+  document.getElementById('copyGeneratedResults').addEventListener('click', () => copyText(textarea));
+  document.getElementById('downloadGeneratedResults').addEventListener('click', () => downloadTextFile('results.js', textarea.value));
+  document.getElementById('closeGeneratedResults').addEventListener('click', closePredictionModal);
+
+  document.getElementById('showGithubUpdatePanel').addEventListener('click', () => {
+    const panel = document.getElementById('githubUpdatePanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    if (panel.style.display !== 'none') {
+      setTimeout(() => document.getElementById('githubPatInput')?.focus(), 50);
+    }
+  });
+
+  document.getElementById('updateGithubMain').addEventListener('click', () => {
+    submitGeneratedResultsCommit(
+      textarea,
+      document.getElementById('githubPatInput'),
+      document.getElementById('updateGithubMain')
+    );
+  });
+
+  document.getElementById('githubPatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('updateGithubMain').click();
+    }
+  });
+}
+
+function enterResultsAdminMode() {
+  resultsAdminMode = true;
+  document.body.classList.add('results-admin-mode');
+
+  document.getElementById('tab-leaderboard')?.classList.remove('active');
+  document.getElementById('tab-predict')?.classList.add('active');
+
+  const note = document.getElementById('groupStageNote');
+  if (note) {
+    note.textContent = 'Modo admin: precargado con lo que ya hay en results.js. Rellena solo los partidos nuevos, guarda el grupo y genera el archivo completo.';
+  }
+
+  const knockoutNote = document.getElementById('knockoutNote');
+  if (knockoutNote) {
+    knockoutNote.textContent = 'Los dieciseisavos se construyen solos al completar todos los grupos. Luego haz click en el ganador de cada cruce para ir abriendo octavos, cuartos, semis, final y 3er puesto.';
+  }
+
+  const groupTitle = document.getElementById('groupStageTitle');
+  if (groupTitle) groupTitle.textContent = '🛠️ Resultados reales: fase de grupos';
+
+  const knockoutTitle = document.getElementById('knockoutTitle');
+  if (knockoutTitle) knockoutTitle.textContent = '🥊 Resultados reales: eliminatorias';
+
+  const submit = document.getElementById('btnSubmit');
+  if (submit) {
+    submit.textContent = '⚽ Actualizar resultados';
+    submit.onclick = openGeneratedResultsModal;
+  }
+
+  loadResultsIntoEditor();
+  renderAll();
+  showToast('Modo administrador');
+}
+
+function setupResultsAdminUnlock() {
+  const title = document.getElementById('siteTitle') || document.querySelector('header h1');
+  if (!title) return;
+
+  let clicks = 0;
+  let timer = null;
+
+  title.addEventListener('click', () => {
+    clicks += 1;
+    clearTimeout(timer);
+    timer = setTimeout(() => { clicks = 0; }, 1600);
+
+    if (clicks >= 5) {
+      clicks = 0;
+      clearTimeout(timer);
+      enterResultsAdminMode();
+    }
+  });
+}
+
 // ---- Master Render ----
 function renderAll() {
-  // buildTPAllocation();
-  // computeMatchTeams();
-  // renderGroups();
-  // renderThirdPlace();
-  // renderBracket();
-  // renderAwardSelects();
+  if (resultsAdminMode) {
+    if (GROUP_NAMES.every(isGroupComplete)) {
+      buildTPAllocation();
+      computeMatchTeams();
+    } else {
+      tpAllocation = {};
+      state.thirdPlace = [];
+      state.matchTeams = {};
+      state.knockoutResults = {};
+    }
+
+    renderGroups();
+    renderThirdPlace();
+    renderBracket();
+    renderAwardSelects();
+    return;
+  }
 
   loadLeaderboard();
 }
@@ -3593,6 +4154,8 @@ async function init() {
     }
   });
 
+
+  setupResultsAdminUnlock();
 
   // restoreLocalPrediction();
 // fillAwards(state.awards);
