@@ -91,15 +91,15 @@ const RESULTS = {
       "South Africa__South Korea": { "home": 2, "away": 0 },
       "South Africa__Czech Republic": { "home": 1, "away": 0 },*/
       "South Korea__Czech Republic": { "home": 2, "away": 1 }
-    },/*
-    "B": {
-      "Canada__Switzerland": { "home": 0, "away": 0 },
-      "Canada__Qatar": { "home": 2, "away": 1 },
-      "Canada__Bosnia & Herzegovina": { "home": 1, "away": 1 },
-      "Switzerland__Qatar": { "home": 2, "away": 0 },
-      "Switzerland__Bosnia & Herzegovina": { "home": 2, "away": 1 },
-      "Qatar__Bosnia & Herzegovina": { "home": 1, "away": 0 }
     },
+    "B": {
+      //"Canada__Switzerland": { "home": 0, "away": 0 },
+      //"Canada__Qatar": { "home": 2, "away": 1 },
+      "Canada__Bosnia & Herzegovina": { "home": 1, "away": 1 },
+      //"Switzerland__Qatar": { "home": 2, "away": 0 },
+      //"Switzerland__Bosnia & Herzegovina": { "home": 2, "away": 1 },
+      //"Qatar__Bosnia & Herzegovina": { "home": 1, "away": 0 }
+    },/*
     "C": {
       "Brazil__Haiti": { "home": 3, "away": 0 },
       "Brazil__Morocco": { "home": 2, "away": 0 },
@@ -107,15 +107,15 @@ const RESULTS = {
       "Haiti__Morocco": { "home": 1, "away": 3 },
       "Haiti__Scotland": { "home": 1, "away": 3 },
       "Morocco__Scotland": { "home": 0, "away": 1 }
-    },
+    },*/
     "D": {
-      "Turkey__Paraguay": { "home": 2, "away": 1 },
-      "Turkey__Australia": { "home": 2, "away": 1 },
-      "Turkey__USA": { "home": 2, "away": 0 },
-      "Paraguay__Australia": { "home": 1, "away": 0 },
-      "Paraguay__USA": { "home": 0, "away": 0 },
-      "Australia__USA": { "home": 0, "away": 0 }
-    },
+      //"Turkey__Paraguay": { "home": 2, "away": 1 },
+      //"Turkey__Australia": { "home": 2, "away": 1 },
+      //"Turkey__USA": { "home": 2, "away": 0 },
+      //"Paraguay__Australia": { "home": 1, "away": 0 },
+      "Paraguay__USA": { "home": 1, "away": 4 },
+      //"Australia__USA": { "home": 0, "away": 0 }
+    },/*
     "E": {
       "Curaçao__Ecuador": { "home": 2, "away": 1 },
       "Curaçao__Germany": { "home": 1, "away": 0 },
