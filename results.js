@@ -147,23 +147,23 @@ const RESULTS = {
       //"Spain__Saudi Arabia": { "home": 0, "away": 1 },
       "Spain__Cape Verde": { "home": 0, "away": 0 },
       //"Saudi Arabia__Cape Verde": { "home": 0, "away": 1 }
-    },/*
+    },
     "I": {
-      "France__Iraq": { "home": 3, "away": 1 },
-      "France__Senegal": { "home": 3, "away": 2 },
-      "France__Norway": { "home": 0, "away": 2 },
-      "Iraq__Senegal": { "home": 2, "away": 1 },
-      "Iraq__Norway": { "home": 1, "away": 1 },
-      "Senegal__Norway": { "home": 0, "away": 1 }
+      //"France__Iraq": { "home": 3, "away": 1 },
+      "France__Senegal": { "home": 3, "away": 1 },
+      //"France__Norway": { "home": 0, "away": 2 },
+      //"Iraq__Senegal": { "home": 2, "away": 1 },
+      //"Iraq__Norway": { "home": 1, "away": 1 },
+      //"Senegal__Norway": { "home": 0, "away": 1 }
     },
     "J": {
-      "Argentina__Jordan": { "home": 1, "away": 3 },
-      "Argentina__Algeria": { "home": 2, "away": 0 },
-      "Argentina__Austria": { "home": 1, "away": 0 },
-      "Jordan__Algeria": { "home": 3, "away": 2 },
-      "Jordan__Austria": { "home": 1, "away": 1 },
-      "Algeria__Austria": { "home": 2, "away": 0 }
-    },
+      //"Argentina__Jordan": { "home": 1, "away": 3 },
+      //"Argentina__Algeria": { "home": 2, "away": 0 },
+      //"Argentina__Austria": { "home": 1, "away": 0 },
+      //"Jordan__Algeria": { "home": 3, "away": 2 },
+      //"Jordan__Austria": { "home": 1, "away": 1 },
+      //"Algeria__Austria": { "home": 2, "away": 0 }
+    },/*
     "K": {
       "Portugal__Uzbekistan": { "home": 2, "away": 1 },
       "Portugal__DR Congo": { "home": 2, "away": 1 },
