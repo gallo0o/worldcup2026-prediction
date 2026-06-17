@@ -4,6 +4,7 @@
    ============================================================ */
 
 const DATA_SRC = 'https://raw.githubusercontent.com/openfootball/worldcup.json/refs/heads/master/2026';
+const DISPLAY_TIME_ZONE = 'Europe/Madrid';
 // EDITA ESTAS 3 COSAS POR FAVOR
 // POR FAVOR
 const LEADERBOARD_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDbPhOej3DnN_bdvrCQ5R0T6HZg6bBaxKdH17J_Pc3oGOkKkd9V83BUDYlBSCevOrqYK2XQuA7ZMCx/pub?gid=1633860364&single=true&output=csv'
@@ -752,13 +753,7 @@ async function loadData() {
       });
 
     Object.keys(GROUP_MATCHES_BY_GROUP).forEach(group => {
-      GROUP_MATCHES_BY_GROUP[group].sort((a, b) => {
-        const dateCmp = String(a.date).localeCompare(String(b.date));
-        if (dateCmp) return dateCmp;
-        const timeCmp = String(a.time).localeCompare(String(b.time));
-        if (timeCmp) return timeCmp;
-        return a.originalIndex - b.originalIndex;
-      });
+      GROUP_MATCHES_BY_GROUP[group].sort(compareMatchesChronologically);
     });
 
     // Initialize state groups
@@ -852,11 +847,85 @@ function getGroupMatchList(group) {
   return matches;
 }
 
+function getMatchUtcTimestamp(match) {
+  if (!match?.date) return Number.POSITIVE_INFINITY;
+
+  const dateParts = String(match.date).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!dateParts) return Number.POSITIVE_INFINITY;
+
+  const [, year, month, day] = dateParts;
+  const timeText = String(match.time || '').trim();
+  const timeParts = timeText.match(/^(\d{1,2}):(\d{2})\s*UTC([+-])(\d{1,2})(?::?(\d{2}))?$/i);
+
+  if (!timeParts) {
+    const fallback = Date.parse(`${match.date}T00:00:00Z`);
+    return Number.isNaN(fallback) ? Number.POSITIVE_INFINITY : fallback;
+  }
+
+  const [, hour, minute, sign, offsetHour, offsetMinute = '0'] = timeParts;
+  const localAsUtc = Date.UTC(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+    Number(hour),
+    Number(minute)
+  );
+  const offsetMinutes = (sign === '-' ? -1 : 1) * (Number(offsetHour) * 60 + Number(offsetMinute));
+
+  return localAsUtc - offsetMinutes * 60 * 1000;
+}
+
+function getMatchSpainDate(match) {
+  const timestamp = getMatchUtcTimestamp(match);
+  if (!Number.isFinite(timestamp)) return null;
+  return new Date(timestamp);
+}
+
+function formatMatchSpainDay(match) {
+  const date = getMatchSpainDate(match);
+  if (!date) return match?.date || '';
+
+  return new Intl.DateTimeFormat('es-ES', {
+    timeZone: DISPLAY_TIME_ZONE,
+    day: 'numeric',
+    month: 'short'
+  }).format(date).replace('.', '').toUpperCase();
+}
+
+function formatMatchSpainTime(match) {
+  const date = getMatchSpainDate(match);
+  if (!date) return '';
+
+  return new Intl.DateTimeFormat('es-ES', {
+    timeZone: DISPLAY_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).format(date);
+}
+
+function formatMatchOriginalTime(match) {
+  return [match?.date, match?.time, match?.ground].filter(Boolean).join(' · ');
+}
+
+function renderMatchDateBadge(match) {
+  return `
+    <div class="match-date-badge" title="Hora local del estadio: ${escapeHtml(formatMatchOriginalTime(match))}">
+      <strong>${escapeHtml(formatMatchSpainDay(match))}</strong>
+      <span>${escapeHtml(formatMatchSpainTime(match))}</span>
+    </div>
+  `;
+}
+
+function compareMatchesChronologically(a, b) {
+  return (getMatchUtcTimestamp(a) - getMatchUtcTimestamp(b)) ||
+    ((a.originalIndex ?? 9999) - (b.originalIndex ?? 9999)) ||
+    String(a.group || '').localeCompare(String(b.group || '')) ||
+    ((a.groupMatchIndex ?? 0) - (b.groupMatchIndex ?? 0));
+}
+
 function formatMatchDate(match) {
-  if (!match.date) return '';
-  const date = new Date(match.date + 'T00:00:00');
-  if (Number.isNaN(date.getTime())) return match.date;
-  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }).replace('.', '').toUpperCase();
+  return formatMatchSpainDay(match);
 }
 
 function getMatchdayNumber(match, fallback) {
@@ -1086,10 +1155,7 @@ function openGroupResultsModal(group) {
     const row = document.createElement('div');
     row.className = 'group-match-row';
     row.innerHTML = `
-      <div class="match-date-badge">
-        <strong>${getMatchdayNumber(match, index)}</strong>
-        <span>${formatMatchDate(match)}</span>
-      </div>
+      ${renderMatchDateBadge(match)}
       <div class="match-team match-team-left">
         <span class="team-flag ${getTeamFlagClass(match.team1)}"></span>
         <span>${match.team1}</span>
@@ -2494,9 +2560,12 @@ function renderPredictionReview(entry) {
 
   viewer.innerHTML = `
     <div class="prediction-review">
-      <h3>La predicción de ${entry.name} — ${entry.score} pts</h3>
+      <h3>La predicción de ${escapeHtml(entry.name)} — ${entry.score} pts</h3>
 
-      <h4>Fase de grupos</h4>
+      <div class="review-section-header">
+        <h4>Fase de grupos</h4>
+        <button type="button" class="toolbar-btn" id="btnAllUserMatches">Ver todos los partidos</button>
+      </div>
       <div class="review-groups" id="reviewGroups"></div>
 
       <h4>Knockout</h4>
@@ -2506,6 +2575,8 @@ function renderPredictionReview(entry) {
       <div class="review-section" id="reviewAwards"></div>
     </div>
   `;
+
+  document.getElementById('btnAllUserMatches')?.addEventListener('click', () => openAllUserMatchesModal(entry));
 
   renderReviewGroups(entry.prediction, entry);
   renderReviewKnockout(entry.prediction);
@@ -2609,6 +2680,72 @@ function calculateGroupReviewTotalPoints(group, prediction) {
   }, 0);
 
   return matchPoints + positionPoints;
+}
+
+function getAllGroupMatchesInChronologicalOrder() {
+  const matches = [];
+
+  GROUP_NAMES.forEach((group, groupIndex) => {
+    getGroupMatchList(group).forEach((match, groupMatchIndex) => {
+      matches.push({
+        ...match,
+        group,
+        groupIndex,
+        groupMatchIndex
+      });
+    });
+  });
+
+  return matches.sort((a, b) => {
+    return compareMatchesChronologically(a, b) ||
+      (a.groupIndex ?? 0) - (b.groupIndex ?? 0) ||
+      (a.groupMatchIndex ?? 0) - (b.groupMatchIndex ?? 0);
+  });
+}
+
+function renderReadOnlyGroupMatchRow(match, index, prediction, group, options = {}) {
+  const predMatches = prediction.groupMatches?.[group] || {};
+  const realMatches = RESULTS.groupMatches?.[group] || {};
+  const pred = getMatchResultFromMap(predMatches, match);
+  const real = getMatchResultFromMap(realMatches, match);
+  const ph = parseGoalValue(pred.home);
+  const pa = parseGoalValue(pred.away);
+  const rh = parseGoalValue(real.home);
+  const ra = parseGoalValue(real.away);
+  const resolved = rh !== null && ra !== null;
+  const exact = resolved && ph === rh && pa === ra;
+  const outcome = resolved && ph !== null && pa !== null && getResultOutcome(ph, pa) === getResultOutcome(rh, ra);
+  const matchPoints = getGroupMatchReviewPoints(ph, pa, rh, ra);
+  const groupPrefix = options.showGroup ? `Grupo ${group}${resolved ? ' · ' : ''}` : '';
+
+  const row = document.createElement('div');
+  row.className =
+    'group-match-row review-match-row' +
+    (exact ? ' review-correct' : '') +
+    (!exact && outcome ? ' review-partial' : '') +
+    (resolved && !outcome ? ' review-wrong' : '') +
+    (!resolved ? ' review-pending' : '');
+
+  row.innerHTML = `
+    ${renderMatchDateBadge(match)}
+    <div class="match-team match-team-left">
+      <span class="team-flag ${getTeamFlagClass(match.team1)}"></span>
+      <span>${escapeHtml(match.team1)}</span>
+    </div>
+    <div class="match-score-controls readonly-score-controls">
+      <span class="readonly-score-box">${ph ?? 0}</span>
+      <span class="score-separator">-</span>
+      <span class="readonly-score-box">${pa ?? 0}</span>
+    </div>
+    <div class="match-team match-team-right">
+      <span>${escapeHtml(match.team2)}</span>
+      <span class="team-flag ${getTeamFlagClass(match.team2)}"></span>
+    </div>
+    <div class="review-match-points-box" title="Puntos de este partido">+${matchPoints}pt</div>
+    ${resolved ? `<div class="review-real-score">${escapeHtml(groupPrefix)}Real: ${rh}-${ra}</div>` : (options.showGroup ? `<div class="review-real-score">Grupo ${escapeHtml(group)} · Real: pendiente</div>` : '')}
+  `;
+
+  return row;
 }
 
 function renderReviewPointsBadge(points, title = '') {
@@ -2779,47 +2916,7 @@ function openReadOnlyGroupResultsModal(entry, group) {
 
   const list = viewer.querySelector('.group-match-list');
   matches.forEach((match, index) => {
-    const pred = getMatchResultFromMap(predMatches, match);
-    const real = getMatchResultFromMap(realMatches, match);
-    const ph = parseGoalValue(pred.home);
-    const pa = parseGoalValue(pred.away);
-    const rh = parseGoalValue(real.home);
-    const ra = parseGoalValue(real.away);
-    const resolved = rh !== null && ra !== null;
-    const exact = resolved && ph === rh && pa === ra;
-    const outcome = resolved && ph !== null && pa !== null && getResultOutcome(ph, pa) === getResultOutcome(rh, ra);
-    const matchPoints = getGroupMatchReviewPoints(ph, pa, rh, ra);
-
-    const row = document.createElement('div');
-    row.className =
-      'group-match-row review-match-row' +
-      (exact ? ' review-correct' : '') +
-      (!exact && outcome ? ' review-partial' : '') +
-      (resolved && !outcome ? ' review-wrong' : '') +
-      (!resolved ? ' review-pending' : '');
-
-    row.innerHTML = `
-      <div class="match-date-badge">
-        <strong>${getMatchdayNumber(match, index)}</strong>
-        <span>${formatMatchDate(match)}</span>
-      </div>
-      <div class="match-team match-team-left">
-        <span class="team-flag ${getTeamFlagClass(match.team1)}"></span>
-        <span>${escapeHtml(match.team1)}</span>
-      </div>
-      <div class="match-score-controls readonly-score-controls">
-        <span class="readonly-score-box">${ph ?? 0}</span>
-        <span class="score-separator">-</span>
-        <span class="readonly-score-box">${pa ?? 0}</span>
-      </div>
-      <div class="match-team match-team-right">
-        <span>${escapeHtml(match.team2)}</span>
-        <span class="team-flag ${getTeamFlagClass(match.team2)}"></span>
-      </div>
-      <div class="review-match-points-box" title="Puntos de este partido">+${matchPoints}pt</div>
-      ${resolved ? `<div class="review-real-score">Real: ${rh}-${ra}</div>` : ''}
-    `;
-    list.appendChild(row);
+    list.appendChild(renderReadOnlyGroupMatchRow(match, index, prediction, group));
   });
 
   const predictedStandingsDiv = viewer.querySelector('#predictedGroupStandings');
@@ -2867,6 +2964,45 @@ function openReadOnlyGroupResultsModal(entry, group) {
       extraClass: classified && idx === 2 ? ' qualified-third' : ' eliminated'
     });
   }).join('');
+
+  document.getElementById('backToPredictionReview').addEventListener('click', () => renderPredictionReview(entry));
+}
+
+function openAllUserMatchesModal(entry) {
+  const viewer = document.getElementById('predictionViewer');
+  const prediction = entry.prediction;
+  const matches = getAllGroupMatchesInChronologicalOrder();
+  const totalMatchPoints = matches.reduce((total, match) => {
+    const pred = getMatchResultFromMap(prediction.groupMatches?.[match.group] || {}, match);
+    const real = getMatchResultFromMap(RESULTS.groupMatches?.[match.group] || {}, match);
+
+    return total + getGroupMatchReviewPoints(
+      parseGoalValue(pred.home),
+      parseGoalValue(pred.away),
+      parseGoalValue(real.home),
+      parseGoalValue(real.away)
+    );
+  }, 0);
+
+  viewer.innerHTML = `
+    <div class="group-results-editor group-results-readonly">
+      <button type="button" class="toolbar-btn review-back-btn" id="backToPredictionReview">← Volver a ${escapeHtml(entry.name)}</button>
+      <h3>PARTIDOS DE ${escapeHtml(entry.name)}</h3>
+      <div class="group-modal-divider"></div>
+      <h4 class="group-modal-section-title"><span>📅</span> TODOS LOS PARTIDOS APOSTADOS</h4>
+      <div class="review-all-matches-summary">
+        <span class="review-group-total-points ${totalMatchPoints > 0 ? 'got-points' : 'no-points'}" title="Total de puntos conseguidos solo en resultados de partidos">+${totalMatchPoints}pt</span>
+        <span class="note-text">Ordenados cronológicamente y comparados contra el resultado real.</span>
+      </div>
+      <div class="group-match-list" id="allUserMatchesList"></div>
+      <div class="group-modal-info">Cada fila enseña su apuesta, el resultado real y los puntos que le dio ese partido.</div>
+    </div>
+  `;
+
+  const list = viewer.querySelector('#allUserMatchesList');
+  matches.forEach(match => {
+    list.appendChild(renderReadOnlyGroupMatchRow(match, match.groupMatchIndex, prediction, match.group, { showGroup: true }));
+  });
 
   document.getElementById('backToPredictionReview').addEventListener('click', () => renderPredictionReview(entry));
 }
