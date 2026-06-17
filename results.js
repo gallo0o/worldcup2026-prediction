@@ -55,7 +55,9 @@ const RESULTS = {
       "Argentina__Algeria": { "home": 3, "away": 0 },
       "Austria__Jordan": { "home": 3, "away": 1 }
     },
-    "K": {},
+    "K": {
+      "Portugal__DR Congo": { "home": 1, "away": 1 }
+    },
     "L": {}
   },
   "knockout": {
