@@ -86,10 +86,10 @@ const RESULTS = {
   "groupMatches": {
     "A": {
       "Mexico__South Africa": { "home": 2, "away": 0 },
-      /*"Mexico__South Korea": { "home": 1, "away": 0 },
-      "Mexico__Czech Republic": { "home": 2, "away": 1 },
-      "South Africa__South Korea": { "home": 2, "away": 0 },
-      "South Africa__Czech Republic": { "home": 1, "away": 0 },*/
+      //"Mexico__South Korea": { "home": 1, "away": 0 },
+      //"Mexico__Czech Republic": { "home": 2, "away": 1 },
+      //"South Africa__South Korea": { "home": 2, "away": 0 },
+      "South Africa__Czech Republic": { "home": 1, "away": 1 },
       "South Korea__Czech Republic": { "home": 2, "away": 1 }
     },
     "B": {
@@ -169,7 +169,7 @@ const RESULTS = {
       "Portugal__DR Congo": { "home": 1, "away": 1 },
       //"Portugal__Colombia": { "home": 0, "away": 1 },
       //"Uzbekistan__DR Congo": { "home": 0, "away": 3 },
-      "Uzbekistan__Colombia": { "home": 1, "away": 2 },
+      "Uzbekistan__Colombia": { "home": 1, "away": 3 },
       //"DR Congo__Colombia": { "home": 1, "away": 0 }
     },
     "L": {
