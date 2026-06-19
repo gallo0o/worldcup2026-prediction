@@ -87,14 +87,14 @@ const RESULTS = {
     "A": {
       "Mexico__South Africa": { "home": 2, "away": 0 },
       //"Mexico__South Korea": { "home": 1, "away": 0 },
-      //"Mexico__Czech Republic": { "home": 2, "away": 1 },
+      "Mexico__Czech Republic": { "home": 1, "away": 0 },
       //"South Africa__South Korea": { "home": 2, "away": 0 },
       "South Africa__Czech Republic": { "home": 1, "away": 1 },
       "South Korea__Czech Republic": { "home": 2, "away": 1 }
     },
     "B": {
       //"Canada__Switzerland": { "home": 0, "away": 0 },
-      //"Canada__Qatar": { "home": 2, "away": 1 },
+      "Canada__Qatar": { "home": 6, "away": 0 },
       "Canada__Bosnia & Herzegovina": { "home": 1, "away": 1 },
       "Switzerland__Qatar": { "home": 1, "away": 1 },
       "Switzerland__Bosnia & Herzegovina": { "home": 4, "away": 1 },
