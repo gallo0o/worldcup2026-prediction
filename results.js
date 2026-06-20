@@ -29,11 +29,15 @@ const RESULTS = {
     },
     "C": {
       "Brazil__Morocco": { "home": 1, "away": 1 },
-      "Haiti__Scotland": { "home": 0, "away": 1 }
+      "Haiti__Scotland": { "home": 0, "away": 1 },
+      "Scotland__Morocco": { "home": 0, "away": 1 },
+      "Brazil__Haiti": { "home": 3, "away": 0 }
     },
     "D": {
       "USA__Paraguay": { "home": 4, "away": 1 },
-      "Australia__Turkey": { "home": 2, "away": 0 }
+      "Australia__Turkey": { "home": 2, "away": 0 },
+      "USA__Australia": { "home": 2, "away": 0 },
+      "Turkey__Paraguay": { "home": 0, "away": 1 }
     },
     "E": {
       "Germany__Curaçao": { "home": 7, "away": 1 },
