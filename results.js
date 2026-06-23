@@ -165,7 +165,7 @@ const RESULTS = {
       //"Algeria__Austria": { "home": 2, "away": 0 }
     },
     "K": {
-      //"Portugal__Uzbekistan": { "home": 2, "away": 1 },
+      "Portugal__Uzbekistan": { "home": 5, "away": 0 },
       "Portugal__DR Congo": { "home": 1, "away": 1 },
       //"Portugal__Colombia": { "home": 0, "away": 1 },
       //"Uzbekistan__DR Congo": { "home": 0, "away": 3 },
@@ -173,7 +173,7 @@ const RESULTS = {
       //"DR Congo__Colombia": { "home": 1, "away": 0 }
     },
     "L": {
-      //"England__Ghana": { "home": 2, "away": 3 },
+      "England__Ghana": { "home": 0, "away": 0 },
       "England__Croatia": { "home": 4, "away": 2 },
       //"England__Panama": { "home": 0, "away": 2 },
       //"Ghana__Croatia": { "home": 2, "away": 0 },
