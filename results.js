@@ -176,9 +176,9 @@ const RESULTS = {
       "England__Ghana": { "home": 0, "away": 0 },
       "England__Croatia": { "home": 4, "away": 2 },
       //"England__Panama": { "home": 0, "away": 2 },
-      "Ghana__Croatia": { "home": 0, "away": 1 },
+      //"Ghana__Croatia": { "home": 0, "away": 1 },
       "Ghana__Panama": { "home": 1, "away": 0 },
-      //"Croatia__Panama": { "home": 1, "away": 2 }
+      "Croatia__Panama": { "home": 0, "away": 1 }
     }
   },
   /*"knockout": {
