@@ -1,5 +1,5 @@
 const RESULTS = {
-  /*"groups": {
+  "groups": {/*
     "A": [
       "Mexico",
       "South Africa",
@@ -71,8 +71,8 @@ const RESULTS = {
       "Panama",
       "Croatia",
       "England"
-    ]
-  },
+    ]*/
+  },/*
   "thirdPlace": [
     "Sweden",
     "Colombia",
