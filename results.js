@@ -83,7 +83,9 @@ const RESULTS = {
     },
     "L": {
       "England__Croatia": { "home": 4, "away": 2 },
-      "Ghana__Panama": { "home": 1, "away": 0 }
+      "Ghana__Panama": { "home": 1, "away": 0 },
+      "England__Ghana": { "home": 0, "away": 0 },
+      "Panama__Croatia": { "home": 0, "away": 1 }
     }
   },
   "knockout": {
