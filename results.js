@@ -5,13 +5,13 @@ const RESULTS = {
       "South Africa",
       "Czech Republic",
       "South Korea"
-    ],
+    ],*/
     "B": [
       "Switzerland",
       "Canada",
-      "Qatar",
-      "Bosnia & Herzegovina"
-    ],
+      "Bosnia & Herzegovina",
+      "Qatar"
+    ],/*
     "C": [
       "Brazil",
       "Scotland",
@@ -93,12 +93,12 @@ const RESULTS = {
       "South Korea__Czech Republic": { "home": 2, "away": 1 }
     },
     "B": {
-      //"Canada__Switzerland": { "home": 0, "away": 0 },
+      "Canada__Switzerland": { "home": 2, "away": 1 },
       "Canada__Qatar": { "home": 6, "away": 0 },
       "Canada__Bosnia & Herzegovina": { "home": 1, "away": 1 },
       "Switzerland__Qatar": { "home": 1, "away": 1 },
       "Switzerland__Bosnia & Herzegovina": { "home": 4, "away": 1 },
-      //"Qatar__Bosnia & Herzegovina": { "home": 1, "away": 0 }
+      "Qatar__Bosnia & Herzegovina": { "home": 3, "away": 1 }
     },
     "C": {
       "Brazil__Haiti": { "home": 3, "away": 0 },
