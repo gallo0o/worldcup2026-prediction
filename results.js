@@ -35,25 +35,25 @@ const RESULTS = {
       "Japan",
       "Sweden",
       "Tunisia"
-    ],/*
+    ],
     "G": [
-      "Egypt",
       "Belgium",
-      "New Zealand",
-      "Iran"
+      "Egypt",
+      "Iran",
+      "New Zealand"
     ],
     "H": [
-      "Uruguay",
-      "Cape Verde",
       "Spain",
+      "Cape Verde",
+      "Uruguay",
       "Saudi Arabia"
     ],
     "I": [
-      "Norway",
       "France",
-      "Iraq",
-      "Senegal"
-    ],
+      "Norway",
+      "Senegal",
+      "Iraq"
+    ],/*
     "J": [
       "Jordan",
       "Argentina",
@@ -134,25 +134,25 @@ const RESULTS = {
     },
     "G": {
       "Egypt__Belgium": { "home": 1, "away": 1 },
-      //"Egypt__Iran": { "home": 2, "away": 1 },
+      "Egypt__Iran": { "home": 1, "away": 1 },
       "Egypt__New Zealand": { "home": 1, "away": 3 },
       "Belgium__Iran": { "home": 0, "away": 0 },
-      //"Belgium__New Zealand": { "home": 1, "away": 0 },
+      "Belgium__New Zealand": { "home": 1, "away": 5 },
       "Iran__New Zealand": { "home": 2, "away": 2 }
     },
     "H": {
-      //"Uruguay__Spain": { "home": 1, "away": 0 },
+      "Uruguay__Spain": { "home": 0, "away": 1 },
       "Uruguay__Saudi Arabia": { "home": 1, "away": 1 },
       "Uruguay__Cape Verde": { "home": 2, "away": 2 },
       "Spain__Saudi Arabia": { "home": 4, "away": 0 },
       "Spain__Cape Verde": { "home": 0, "away": 0 },
-      //"Saudi Arabia__Cape Verde": { "home": 0, "away": 1 }
+      "Saudi Arabia__Cape Verde": { "home": 0, "away": 0 }
     },
     "I": {
       "France__Iraq": { "home": 3, "away": 0 },
       "France__Senegal": { "home": 3, "away": 1 },
-      //"France__Norway": { "home": 0, "away": 2 },
-      //"Iraq__Senegal": { "home": 2, "away": 1 },
+      "France__Norway": { "home": 1, "away": 4 },
+      "Iraq__Senegal": { "home": 5, "away": 0 },
       "Iraq__Norway": { "home": 1, "away": 4 },
       "Senegal__Norway": { "home": 3, "away": 2 }
     },
