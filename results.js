@@ -36,12 +36,32 @@ const RESULTS = {
       "Sweden",
       "Tunisia"
     ],
-    "G": [],
-    "H": [],
-    "I": [],
+    "G": [
+      "Belgium",
+      "Egypt",
+      "Iran",
+      "New Zealand"
+    ],
+    "H": [
+      "Spain",
+      "Cape Verde",
+      "Uruguay",
+      "Saudi Arabia"
+    ],
+    "I": [
+      "France",
+      "Norway",
+      "Senegal",
+      "Iraq"
+    ],
     "J": [],
     "K": [],
-    "L": []
+    "L": [
+      "England",
+      "Croatia",
+      "Ghana",
+      "Panama"
+    ]
   },
   "thirdPlace": [],
   "groupMatches": {
@@ -97,19 +117,25 @@ const RESULTS = {
       "Belgium__Egypt": { "home": 1, "away": 1 },
       "Iran__New Zealand": { "home": 2, "away": 2 },
       "Belgium__Iran": { "home": 0, "away": 0 },
-      "New Zealand__Egypt": { "home": 1, "away": 3 }
+      "New Zealand__Egypt": { "home": 1, "away": 3 },
+      "Egypt__Iran": { "home": 1, "away": 1 },
+      "New Zealand__Belgium": { "home": 1, "away": 5 }
     },
     "H": {
       "Spain__Cape Verde": { "home": 0, "away": 0 },
       "Saudi Arabia__Uruguay": { "home": 1, "away": 1 },
       "Spain__Saudi Arabia": { "home": 4, "away": 0 },
-      "Uruguay__Cape Verde": { "home": 2, "away": 2 }
+      "Uruguay__Cape Verde": { "home": 2, "away": 2 },
+      "Cape Verde__Saudi Arabia": { "home": 0, "away": 0 },
+      "Uruguay__Spain": { "home": 0, "away": 1 }
     },
     "I": {
       "France__Senegal": { "home": 3, "away": 1 },
       "Iraq__Norway": { "home": 1, "away": 4 },
       "France__Iraq": { "home": 3, "away": 0 },
-      "Norway__Senegal": { "home": 3, "away": 2 }
+      "Norway__Senegal": { "home": 3, "away": 2 },
+      "Norway__France": { "home": 1, "away": 4 },
+      "Senegal__Iraq": { "home": 5, "away": 0 }
     },
     "J": {
       "Argentina__Algeria": { "home": 3, "away": 0 },
@@ -127,7 +153,9 @@ const RESULTS = {
       "England__Croatia": { "home": 4, "away": 2 },
       "Ghana__Panama": { "home": 1, "away": 0 },
       "England__Ghana": { "home": 0, "away": 0 },
-      "Panama__Croatia": { "home": 0, "away": 1 }
+      "Panama__Croatia": { "home": 0, "away": 1 },
+      "Panama__England": { "home": 0, "away": 2 },
+      "Croatia__Ghana": { "home": 2, "away": 1 }
     }
   },
   "knockout": {
