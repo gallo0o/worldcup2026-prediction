@@ -184,6 +184,7 @@ const RESULTS = {
   "knockout": {
     "round32": [
       "Canada",
+      "Brazil",
       "Paraguay",
       "Morocco"
     ],
@@ -206,32 +207,32 @@ const RESULTS = {
         },
         {
           "match": 74,
+          "team1": "Brazil",
+          "team2": "Japan",
+          "winner": "Brazil"
+        },
+        {
+          "match": 75,
           "team1": "Germany",
           "team2": "Paraguay",
           "winner": "Paraguay"
         },
         {
-          "match": 75,
+          "match": 76,
           "team1": "Netherlands",
           "team2": "Morocco",
           "winner": "Morocco"
         },
         {
-          "match": 76,
-          "team1": "Brazil",
-          "team2": "Japan",
-          "winner": null
-        },
-        {
           "match": 77,
-          "team1": "France",
-          "team2": "Sweden",
+          "team1": "Ivory Coast",
+          "team2": "Norway",
           "winner": null
         },
         {
           "match": 78,
-          "team1": "Ivory Coast",
-          "team2": "Norway",
+          "team1": "France",
+          "team2": "Sweden",
           "winner": null
         },
         {
@@ -248,26 +249,26 @@ const RESULTS = {
         },
         {
           "match": 81,
-          "team1": "USA",
-          "team2": "Bosnia & Herzegovina",
-          "winner": null
-        },
-        {
-          "match": 82,
           "team1": "Belgium",
           "team2": "Senegal",
           "winner": null
         },
         {
+          "match": 82,
+          "team1": "USA",
+          "team2": "Bosnia & Herzegovina",
+          "winner": null
+        },
+        {
           "match": 83,
-          "team1": "Portugal",
-          "team2": "Croatia",
+          "team1": "Spain",
+          "team2": "Austria",
           "winner": null
         },
         {
           "match": 84,
-          "team1": "Spain",
-          "team2": "Austria",
+          "team1": "Portugal",
+          "team2": "Croatia",
           "winner": null
         },
         {
@@ -278,20 +279,20 @@ const RESULTS = {
         },
         {
           "match": 86,
+          "team1": "Australia",
+          "team2": "Egypt",
+          "winner": null
+        },
+        {
+          "match": 87,
           "team1": "Argentina",
           "team2": "Cape Verde",
           "winner": null
         },
         {
-          "match": 87,
+          "match": 88,
           "team1": "Colombia",
           "team2": "Ghana",
-          "winner": null
-        },
-        {
-          "match": 88,
-          "team1": "Australia",
-          "team2": "Egypt",
           "winner": null
         }
       ],
@@ -307,7 +308,13 @@ const RESULTS = {
           "team1": "Paraguay",
           "team2": null,
           "winner": null
-        }
+        },
+        {
+          "match": 91,
+          "team1": "Brazil",
+          "team2": null,
+          "winner": null
+        },
       ],
       "quarterfinals": [],
       "semifinals": [],
