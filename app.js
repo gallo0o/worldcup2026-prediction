@@ -30,9 +30,9 @@ const puntuaciones = {
     round16: 3,
     quarterfinals: 5,
     semifinals: 10,
-    finalist: 20,
-    champion: 20,
-    thirdPlace: 15
+    finalist: 15,
+    champion: 25,
+    thirdPlace: 10
   },
   premios: {
     goldenBoot: [15, 10, 5],
