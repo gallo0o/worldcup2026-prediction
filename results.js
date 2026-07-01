@@ -186,7 +186,10 @@ const RESULTS = {
       "Canada",
       "Paraguay",
       "Morocco",
-      "Brazil"
+      "Brazil",
+      "France",
+      "Norway",
+      "Mexico"
     ],
     "round16": [],
     "quarterfinals": [],
@@ -227,19 +230,19 @@ const RESULTS = {
           "match": 77,
           "team1": "France",
           "team2": "Sweden",
-          "winner": null
+          "winner": "France"
         },
         {
           "match": 78,
           "team1": "Ivory Coast",
           "team2": "Norway",
-          "winner": null
+          "winner": "Norway"
         },
         {
           "match": 79,
           "team1": "Mexico",
           "team2": "Ecuador",
-          "winner": null
+          "winner": "Mexico"
         },
         {
           "match": 80,
@@ -306,12 +309,18 @@ const RESULTS = {
         {
           "match": 90,
           "team1": "Paraguay",
-          "team2": null,
+          "team2": "France",
           "winner": null
         },
         {
           "match": 91,
           "team1": "Brazil",
+          "team2": "Norway",
+          "winner": null
+        },
+        {
+          "match": 92,
+          "team1": "Mexico",
           "team2": null,
           "winner": null
         }
