@@ -248,19 +248,19 @@ const RESULTS = {
           "match": 80,
           "team1": "England",
           "team2": "DR Congo",
-          "winner": null
+          "winner": "England"
         },
         {
           "match": 81,
           "team1": "USA",
           "team2": "Bosnia & Herzegovina",
-          "winner": null
+          "winner": "USA"
         },
         {
           "match": 82,
           "team1": "Belgium",
           "team2": "Senegal",
-          "winner": null
+          "winner": "Belgium"
         },
         {
           "match": 83,
@@ -321,7 +321,13 @@ const RESULTS = {
         {
           "match": 92,
           "team1": "Mexico",
-          "team2": null,
+          "team2": "England",
+          "winner": null
+        },
+        {
+          "match": 93,
+          "team1": "USA",
+          "team2": "Belgium",
           "winner": null
         }
       ],
